@@ -9,26 +9,14 @@ const listingSchema = new Schema({
   },
   description: String,
 
-
- /*  image: new Schema({
-    filename: String,
-    url: {
+   image:  {
       type: String,
+      filename: String,
       set: (v) =>
         v === ''
           ? 'https://img.freepik.com/free-photo/sunset-time-tropical-beach-sea-with-coconut-palm-tree_74190-1075.jpg?semt=ais_hybrid&w=740&q=80'
           : v,
     },
-  }, { _id: false }),  */
-
-  image:  {
-      type: String,
-      set: (v) =>
-        v === ''
-          ? 'https://img.freepik.com/free-photo/sunset-time-tropical-beach-sea-with-coconut-palm-tree_74190-1075.jpg?semt=ais_hybrid&w=740&q=80'
-          : v,
-    },
-
 
   price: Number,
   location: String,
