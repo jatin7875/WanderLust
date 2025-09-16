@@ -5,7 +5,10 @@ const Listing = require("./models/listing.js");
 const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
-
+const { nextTick } = require("process");
+const wrapAsync = require("./utils/wrapAsync.js");
+const ExpressError = require("./utils/expressErrors.js");
+const expressError = require("./utils/expressErrors.js");
 
 main().then(() =>{
     console.log("Database connected successsfully");
@@ -61,11 +64,14 @@ app.get("/listings/:id",async(req,res) =>{
 });
 
 //create route
-app.post("/listings",async (req,res)=>{
+app.post("/listings",wrapAsync(async (req,res,next)=>{
+    if(!req.body.listing){
+        throw ExpressError(400,"Send valid data for listing");
+    }
     const newListing = new Listing(req.body.listing);
     await newListing.save();
     res.redirect("/listings");
-});
+}));
 
 
 //edit route
@@ -77,6 +83,9 @@ app.get("/listings/:id/edit", async(req,res)=>{
 
 //update edit route
 app.put("/listings/:id",async(req,res)=>{
+     if(!req.body.listing){
+        throw ExpressError(400,"Send valid data for listing");
+    }
     let {id} = req.params;
     await Listing.findByIdAndUpdate(id,{...req.body.listing});
     res.redirect(`/listings/${id}`);
@@ -88,4 +97,10 @@ app.delete("/listings/:id",async(req,res) =>{
      let deletedListing = await Listing.findByIdAndDelete(id);
      console.log(deletedListing);
      res.redirect("/listings"); 
+});
+
+//middleware
+app.use((err, req, res, next) => {
+    const { statusCode = 500, message = "Something went wrong!" } = err;
+    res.status(statusCode).send(message);
 });
