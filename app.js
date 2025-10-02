@@ -8,7 +8,7 @@ const ejsMate = require("ejs-mate");
 const { nextTick } = require("process");
 const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/expressErrors.js");
-const expressError = require("./utils/expressErrors.js");
+const {listingSchema} = require("./schema.js");
 
 main().then(() =>{
     console.log("Database connected successsfully");
@@ -29,6 +29,19 @@ app.use(express.static(path.join(__dirname,"/public")));
 app.listen(8080, ()=>{
     console.log("server is listening to port 8080");
 });
+
+//creating joi middleware for validation error showing
+const validateListing = (req,res,next) =>{
+    let {error} = listingSchema.validate(req.body);
+    if(error){
+        let errMsg = error.details.map((el)=> el.message).join(",");
+        throw new ExpressError(400,errMsg);
+    }else{
+        next();
+    }
+}
+
+
 app.get("/",(req,res)=>{
     console.log("hii, i am root");
 });
@@ -64,10 +77,7 @@ app.get("/listings/:id",async(req,res) =>{
 });
 
 //create route
-app.post("/listings",wrapAsync(async (req,res,next)=>{
-    if(!req.body.listing){
-        throw ExpressError(400,"Send valid data for listing");
-    }
+app.post("/listings",validateListing,wrapAsync(async (req,res,next)=>{
     const newListing = new Listing(req.body.listing);
     await newListing.save();
     res.redirect("/listings");
@@ -82,10 +92,7 @@ app.get("/listings/:id/edit", async(req,res)=>{
 });
 
 //update edit route
-app.put("/listings/:id",async(req,res)=>{
-     if(!req.body.listing){
-        throw ExpressError(400,"Send valid data for listing");
-    }
+app.put("/listings/:id",validateListing,async(req,res)=>{
     let {id} = req.params;
     await Listing.findByIdAndUpdate(id,{...req.body.listing});
     res.redirect(`/listings/${id}`);
@@ -102,5 +109,6 @@ app.delete("/listings/:id",async(req,res) =>{
 //middleware
 app.use((err, req, res, next) => {
     const { statusCode = 500, message = "Something went wrong!" } = err;
-    res.status(statusCode).send(message);
+    res.status(statusCode).render("error", { message });
+   /*  res.status(statusCode).send(message); */
 });
