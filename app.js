@@ -12,6 +12,7 @@ const { nextTick } = require("process");
 const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/expressErrors.js");
 const session = require("express-session");
+const MongoStore = require("connect-mongo");
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
@@ -22,15 +23,18 @@ const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
 
- 
+const DB_URL = process.env.ATLAS_DB_URL;
+async function main() {
+  await mongoose.connect(DB_URL);
+}  
+
+
 main().then(() =>{
     console.log("Database connected successsfully");
 })
 .catch(err => console.log(err));
 
-async function main() {
-  await mongoose.connect('mongodb://127.0.0.1:27017/wanderlust');
-}
+
 
 app.set("view engine",'ejs');
 app.set("views",path.join(__dirname,"views"));
@@ -39,8 +43,19 @@ app.use(methodOverride("_method"));
 app.engine('ejs',ejsMate);
 app.use(express.static(path.join(__dirname,"/public")));
 
+
+const storee = MongoStore.create({
+    mongoUrl: DB_URL,
+    crypto: {
+        secret: process.env.SECRET
+    },
+    touchAfter: 24 * 3600
+});
+
+
 const sessionOptions ={
-    secret:"mysupersecretcode",
+    storee,
+    secret: process.env.SECRET,
     resave: false,
     saveUninitialized: true,
     cookie:{
