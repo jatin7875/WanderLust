@@ -1,0 +1,95 @@
+<% layout("/layouts/boilerplate") %>
+<style>
+  /* Page Title */
+  h3 {
+    font-weight: 600;
+    margin-bottom: 2rem;
+  }
+
+  /* Card Styling */
+  .listing-card {
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    background: none;
+}
+.result-card{
+     border: none !important;
+  box-shadow: none !important;
+  background: none;
+}
+
+  /* Image Styling */
+  .listing-card img {
+    height: 250px;
+    width: 100%;
+    object-fit: cover;
+  }
+
+  /* Card Body */
+  .listing-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+  }
+
+  .listing-location {
+    color: #555;
+    font-size: 0.9rem;
+    margin-bottom: 0.8rem;
+  }
+
+  /* View Button */
+  .view-btn {
+    border-radius: 12px;
+    padding: 0.4rem 1rem;
+  }
+
+  /* Grid Gap */
+  .row {
+    row-gap: 25px;
+  }
+  .title{
+    margin-top: 0.6rem;
+    margin-left: 0.6rem;
+  }
+  .location{
+    margin-top: 0.6rem;
+    margin-left: 0.6rem;
+  }
+  .view-btn-div{
+     background-color:#fe424d;
+    border-radius: 25px;
+    padding:0 1rem 0 1rem;
+    width: 5rem;
+    margin: 0.7rem;
+  }
+  .view-btn{
+    color:#ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>
+
+<h3>Search Results for "<%= query %>"</h3>
+<div class="row listing-card ">
+    <% if (listings.length === 0) { %>
+        <h4>No results found.</h4>
+    <% } %>
+
+    <% listings.forEach(listing => { %>
+        <div class="col-4 mb-3">
+            <div class="card result-card">
+                <img src="<%= listing.image.url %>" class="card-img-top">
+                <div class="card-body">
+                    <h5 class="title"><%= listing.title %></h5>
+                    <p class="location"><%= listing.location %></p>
+                    <div class="view-btn-div">
+                        <a href="/listings/<%= listing._id %>" class="btn view-btn">View</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% }) %>
+</div>

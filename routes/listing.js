@@ -14,6 +14,22 @@ const upload = multer({storage});
 //create new listing route
 router.get("/new",isLoggedIn,listingController.renderNewFrom);
 
+// SEARCH route (must be ABOVE :id)
+router.get("/search", wrapAsync(async (req, res) => {
+    const query = req.query.q || "";
+
+    const listings = await Listing.find({
+        $or: [
+            { title:     { $regex: query, $options: "i" } },
+            { location:  { $regex: query, $options: "i" } },
+            { country:   { $regex: query, $options: "i" } }
+        ]
+    });
+
+    res.render("listings/searchListing.ejs", { listings, query });
+}));
+
+
 //show route
 router.get("/:id",wrapAsync(listingController.showListing));
 
