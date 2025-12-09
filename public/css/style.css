@@ -122,3 +122,82 @@ body {
     padding-left: 0;
     padding-right: 0;
  }
+
+ /* Base: ensure images and cards scale */
+.card-img-top {
+  width: 100% !important;
+  height: auto;
+  object-fit: cover !important;
+}
+
+.container {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* Buttons full width on small screens */
+.btn,
+.add-btn,
+.edit-btn {
+  width: 100%;
+}
+
+/* Show page buttons stack */
+.btns {
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+/* Small devices (phones) */
+@media (max-width: 576px) {
+  .navbar {
+    height: auto;
+    padding: 0.5rem 1rem;
+  }
+
+  .nav-link {
+    display: block;
+    padding: 0.25rem 0;
+    text-align: left;
+  }
+
+  .f-info {
+    height: auto;
+    padding: 1rem 0.5rem;
+  }
+
+  .f-info-links,
+  .f-info-socials,
+  .f-info-brand {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  .listing-card {
+    margin-bottom: 1rem;
+  }
+
+  .show-img {
+    height: auto;
+    max-height: 40vh;
+  }
+
+  .show-card {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}
+
+/* Medium devices (tablets) */
+@media (min-width: 577px) and (max-width: 992px) {
+  .navbar {
+    padding: 0.75rem 2rem;
+  }
+
+  .listing-card {
+    margin-bottom: 1.5rem;
+  }
+
+  .btns {
+    gap: 0.75rem;
+  }
+}
