@@ -99,6 +99,9 @@ app.listen(8080, ()=>{
     console.log("server is listening to port 8080");
 });
 
+app.get("/", (req, res) => {
+    res.redirect("/listings");
+});
 
 app.use("/listings",listingRouter);
 app.use("/listings/:id/reviews",reviewRouter);
@@ -110,4 +113,8 @@ app.use((err, req, res, next) => {
     const { statusCode = 500, message = "Something went wrong!" } = err;
     res.status(statusCode).render("error", { message });
    /*  res.status(statusCode).send(message); */
+});
+
+app.get("/", (req, res) => {
+    res.redirect("/listings");
 });
