@@ -1,8 +1,8 @@
 {
   "engines": {
-      "node":"v22.17.0"
-    },
-  
+  "node": "18.x"
+}
+,
   "name": "project",
   "version": "1.0.0",
   "main": "index.js",
